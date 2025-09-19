@@ -1,0 +1,29 @@
+{
+  "event_name": "ต้องไป รพ. หมอนัด",
+  "event_datetime": "2024-05-20 09:00",
+  "reminder_levels": [
+    {
+      "label": "1 สัปดาห์ก่อน",
+      "minutes_before": 10080
+    },
+    {
+      "label": "1 วันก่อน",
+      "minutes_before": 1440
+    },
+    {
+      "label": "3 ชั่วโมงก่อน",
+      "minutes_before": 180
+    },
+    {
+      "label": "10 นาทีล่วงหน้า",
+      "minutes_before": 10
+    }
+  ],
+  "notification_types": [
+    "เสียงปลุก",
+    "push notification",
+    "สั่นแรง"
+  ],
+  "note": "เตรียมเอกสารการรักษาให้ครบ",
+  "sos_phone": "0812345678"
+}
