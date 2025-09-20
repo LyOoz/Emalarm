@@ -133,7 +133,7 @@ export const ReminderProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       const boxId = reminder.box;
       if (boxId != null) {
-        console.log(`send to start esp32 box:${boxId}`)
+        console.log(`sendd to start esp32 box:${boxId}`)
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000);
 
