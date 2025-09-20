@@ -1,0 +1,54 @@
+{
+  "fields": [
+    {
+      "type": "TextInput",
+      "label": "ชื่อเหตุการณ์",
+      "placeholder": "เช่น ต้องไป รพ. หมอนัด",
+      "key": "event_name"
+    },
+    {
+      "type": "DateTimePicker",
+      "label": "วัน/เวลา",
+      "key": "event_datetime"
+    },
+    {
+      "type": "CheckboxGroup",
+      "label": "ระดับการแจ้งเตือนล่วงหน้า",
+      "options": [
+        "1 สัปดาห์ก่อน",
+        "1 วันก่อน",
+        "3 ชั่วโมงก่อน",
+        "10 นาทีล่วงหน้า"
+      ],
+      "key": "reminder_levels"
+    },
+    {
+      "type": "CheckboxGroup",
+      "label": "รูปแบบการแจ้งเตือน",
+      "options": [
+        "เสียงปลุก",
+        "push notification",
+        "สั่นแรง"
+      ],
+      "key": "notification_types"
+    },
+    {
+      "type": "TextInput",
+      "label": "โน้ตหรือรายละเอียดเพิ่มเติม",
+      "placeholder": "เตรียมเอกสารการรักษาให้ครบ",
+      "key": "note"
+    },
+    {
+      "type": "TextInput",
+      "label": "เบอร์โทร SOS",
+      "placeholder": "เช่น 0812345678",
+      "keyboardType": "phone-pad",
+      "key": "sos_phone"
+    },
+    {
+      "type": "Button",
+      "label": "บันทึกการแจ้งเตือน",
+      "action": "submit"
+    }
+  ]
+}

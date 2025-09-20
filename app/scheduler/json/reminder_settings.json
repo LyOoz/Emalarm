@@ -1,0 +1,38 @@
+{
+  "reminders": [
+    {
+      "id": "1",
+      "title": "ไปหาหมอ เวลา 09:00",
+      "datetime": "2024-05-01T09:00:00",
+      "advance_alerts": [
+        "1 วันก่อน",
+        "3 ชั่วโมงก่อน"
+      ],
+      "alert_types": [
+        "เสียงปลุก",
+        "push notification"
+      ],
+      "note": "เตรียมบัตรประชาชนและประวัติการรักษา",
+      "sos": {
+        "enabled": true,
+        "contact_name": "ลูกชาย",
+        "contact_phone": "0812345678"
+      }
+    },
+    {
+      "id": "2",
+      "title": "กินยา เวลา 12:00",
+      "datetime": "2024-05-01T12:00:00",
+      "advance_alerts": [
+        "10 นาทีล่วงหน้า"
+      ],
+      "alert_types": [
+        "สั่นแรง"
+      ],
+      "note": "ยาความดัน",
+      "sos": {
+        "enabled": false
+      }
+    }
+  ]
+}
