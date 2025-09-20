@@ -28,16 +28,19 @@ export default function EditReminder() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
+  const [repeat, setRepeat] = useState<'none' | 'daily' | 'weekly' | 'monthly'>('none');
+  const [repeatEndDate, setRepeatEndDate] = useState<Date | null>(null);
+
   const categories = [
     'งาน', 'ส่วนตัว', 'สุขภาพ', 'การเงิน', 'การศึกษา', 
     'ครอบครัว', 'เพื่อน', 'ออกกำลังกาย', 'อื่นๆ'
   ];
 
+
   useEffect(() => {
-    
     if (selectedReminder) {
       setTitle(selectedReminder.title);
-      setNote(selectedReminder.note || '');
+      setNote(selectedReminder.note ?? '');
       setCategory(selectedReminder.category);
       if (selectedReminder.date) {
         setSelectedDate(new Date(selectedReminder.date));
@@ -45,6 +48,8 @@ export default function EditReminder() {
       if (selectedReminder.box !== undefined) {
         setSelectedBox(selectedReminder.box);
       }
+      setRepeat(selectedReminder.repeat ?? 'none');
+      setRepeatEndDate(selectedReminder.repeatEndDate ? new Date(selectedReminder.repeatEndDate) : null);
     } else {
       router.back();
     }
@@ -73,14 +78,18 @@ export default function EditReminder() {
         }
       }
 
+
     const updatedReminder = {
       ...selectedReminder,
       title: title.trim(),
       note: note.trim(),
       category,
       date: selectedDate,
-      box: selectedBox, // อัปเดตกล่องยา
+      box: selectedBox,
+      repeat,
+      repeatEndDate: repeatEndDate || undefined,
     };
+    editReminder(updatedReminder);
 
     editReminder(updatedReminder);
     setSelectedReminder(null);
@@ -254,6 +263,42 @@ export default function EditReminder() {
             <Text style={styles.dateTimeText}>{formatTime(selectedDate)}</Text>
           </TouchableOpacity>
         </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>รูปแบบการแจ้งเตือนซ้ำ</Text>
+        <View style={styles.categoryContainer}>
+          {['none', 'daily', 'weekly', 'monthly'].map((type) => (
+            <TouchableOpacity
+              key={type}
+              style={[
+                styles.categoryButton,
+                repeat === type && styles.selectedCategoryButton,
+              ]}
+              onPress={() => setRepeat(type as any)}
+            >
+              <Text
+                style={[
+                  styles.categoryText,
+                  repeat === type && styles.selectedCategoryText,
+                ]}
+              >
+                {type === 'none' ? 'ไม่ซ้ำ' : type === 'daily' ? 'ทุกวัน' : type === 'weekly' ? 'ทุกสัปดาห์' : 'ทุกเดือน'}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        {repeat !== 'none' && (
+          <TouchableOpacity
+            style={styles.dateTimeButton}
+            onPress={() => setShowDatePicker(true)}
+          >
+            <Ionicons name="calendar-outline" size={20} color="#008080" />
+            <Text style={styles.dateTimeText}>
+              {repeatEndDate ? `สิ้นสุด ${formatDate(repeatEndDate)}` : 'เลือกวันสิ้นสุด'}
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
 
         <View style={styles.previewContainer}>
           <Text style={styles.previewTitle}>ตัวอย่าง</Text>
