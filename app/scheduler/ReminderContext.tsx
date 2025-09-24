@@ -131,53 +131,43 @@ export const ReminderProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const sendToHardware = async (reminder: ReminderWithAction) => {
     try {
-      const boxId = reminder.box;
-      if (boxId != null) {
-        console.log(`sendd to start esp32 box:${boxId}`)
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-        try {
-          const response = await fetch(`http://172.20.10.2/trigger/${boxId}`, { //ip esp32
-            method: 'POST',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify({ 
-              title: reminder.title,
-              note: reminder.note,
-              timestamp: new Date().toISOString()
-            }),
-            signal: controller.signal
-          });
+      let url = '';
+      let body = {};
 
-          clearTimeout(timeoutId);
-          
-          if (response.ok) {
-            const result = await response.text();
-          } else {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-        } catch (fetchError) {
-          clearTimeout(timeoutId);
-          throw fetchError;
-        }
+      if (reminder.action === 'start' && reminder.box != null) {
+        url = `http://172.20.10.2/trigger/${reminder.box}`;
+        body = {
+          title: reminder.title,
+          note: reminder.note,
+          timestamp: new Date().toISOString(),
+        };
+        console.log(`ส่งไป esp ให้ start box: ${reminder.box}`)
+      } else if (reminder.action === 'stop') {
+        url = `http://172.20.10.2/stop`;
+        body = {};
+        console.log(`ส่งไป esp ให้ stop box: ${reminder.box}`)
+      }
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
     } catch (err) {
-    const error = err as Error;
-      let errorMessage = 'ไม่สามารถส่งคำสั่งไปยังกล่องยาได้';
-      
-      if (error.name === 'AbortError') {
-        errorMessage += '\nสาเหตุ: หมดเวลาการเชื่อมต่อ (Timeout)';
-      } else if (error.message.includes('Network')) {
-        errorMessage += '\nสาเหตุ: ปัญหาเครือข่าย กรุณาตรวจสอบ WiFi';
-      } else if (error.message.includes('HTTP')) {
-        errorMessage += `\nสาเหตุ: ${error.message}`;
-      } else {
-        errorMessage += `\nสาเหตุ: ${error.message}`;
-      }
-
+      console.error('Error sending to ESP32:', err);
     }
   };
 
