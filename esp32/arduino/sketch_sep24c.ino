@@ -2,8 +2,8 @@
 #include <WebServer.h>
 #include <ArduinoJson.h>
 
-const char* ssid = "Lyo";
-const char* password = "76245441";
+const char* ssid = "";
+const char* password = "";
 
 WebServer server(80);
 
@@ -27,8 +27,8 @@ struct MedicineBox {
 };
 
 MedicineBox boxes[6];
-const unsigned long BUZZER_TIMEOUT = 60000; // 1 นาที
-const unsigned long LED_BLINK_INTERVAL = 500; // กระพริบทุก 500ms
+const unsigned long BUZZER_TIMEOUT = 60000; 
+const unsigned long LED_BLINK_INTERVAL = 500; 
 int activeBuzzerBox = -1; 
 
 void setup() {
