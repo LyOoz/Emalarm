@@ -187,7 +187,6 @@ export default function SOSScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
@@ -196,7 +195,6 @@ export default function SOSScreen() {
         <View style={{ width: 40 }} />
       </View>
 
-      {/* Emergency Number 1669 */}
       <View style={styles.emergencySection}>
         <View style={styles.emergencyCard}>
           <Ionicons name="medical" size={48} color="#ff0000ff" />
