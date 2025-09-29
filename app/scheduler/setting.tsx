@@ -7,7 +7,8 @@ import {
   FlatList,
   RefreshControl,
   ScrollView,
-  Platform
+  Platform,
+  Image
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -17,7 +18,6 @@ export default function ReminderSettings() {
   const router = useRouter();
   const { getTodayReminders, markReminderDone } = useReminder();
   const [refreshing, setRefreshing] = useState(false);
-
 
   const handleDone = (id: string) => {
     markReminderDone(id);
@@ -34,8 +34,25 @@ export default function ReminderSettings() {
     note?: string;
     date: string | Date;
     done: boolean;
-    box?: number | null    
+    box?: number | null;
+    category?: string;
   }
+
+  const getCategoryIcon = (category?: string): { image: any; bg: string } => {
+    switch (category) {
+      case 'ยา':
+        return { image: require('../asset/img/medic.png'), bg: '#DBEAFE' };
+      case 'นัดหมอ':
+        return { image: require('../asset/img/doctor.png'), bg: '#EDE9FE' };
+      case 'นัดหมายทั่วไป':
+        return { image: require('../asset/img/hangout.png'), bg: '#D1FAE5' };
+      case 'การศึกษา':
+        return { image: require('../asset/img/study.png'), bg: '#FEF3C7' };
+      default:
+        return { image: require('../asset/img/medic.png'), bg: '#DBEAFE' };
+    }
+  };
+
   const getTimeRemaining = (dateInput: Date | string) => {
     const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
     const now = new Date();
@@ -54,57 +71,66 @@ export default function ReminderSettings() {
     return { text: `เหลืออีก ${diffSecs} วินาที`, urgent: true };
   };
 
-
-
   const renderItem = ({ item }: { item: Reminder }) => {
     const isDone = item.done;
     const now = new Date();
     const reminderDate = new Date(item.date); 
     const isTimeUp = reminderDate.getTime() <= now.getTime();
     const timeInfo = getTimeRemaining(reminderDate);
+    const iconData = getCategoryIcon(item.category);
+
+    const dateObj = new Date(item.date);
+    const hours = String(dateObj.getHours()).padStart(2, '0');
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
 
     return (
-      <View style={[styles.reminderItem, isDone && styles.doneItem]}>
-        <View style={styles.itemHeader}>
-          <View style={styles.iconContainer}>
-            <Ionicons 
-              name={isDone ? "checkmark-circle" : "medical-outline"} 
-              size={24} 
-              color={isDone ? "#4CAF50" : "#FF6B6B"} 
-            />
-          </View>
-          <View style={styles.contentContainer}>
-            <Text style={[styles.reminderText, isDone && styles.doneText]}>
-              {item.title}
-            </Text>
-            {item.note && (
-              <Text style={[styles.noteText, isDone && styles.doneNoteText]}>
-                {item.note}
-              </Text>
-            )}
-            {item.box != null && (
-                <Text style={{ fontSize: 12, color: '#888' }}>กล่องยา: {item.box}</Text>
-            )}
-
-            {timeInfo && (
-              <View style={[styles.timeContainer, timeInfo.urgent && styles.urgentTimeContainer]}>
-                <Text style={[styles.timeText, { color: timeInfo.urgent ? '#FF6B6B' : '#4ECDC4' }]}>
-                  {timeInfo.text}
-                </Text>
-              </View>
-            )}
-          </View>
+      <View style={[styles.cardItem, isDone && styles.cardItemDone]}>
+        <View style={[styles.categoryIconContainer, { backgroundColor: iconData.bg }]}>
+          <Image 
+            source={iconData.image} 
+            style={styles.categoryImage}
+            resizeMode="contain"
+          />
         </View>
-        {!isDone && isTimeUp && (
-          <TouchableOpacity 
-            style={styles.completeButton}
-            onPress={() => handleDone(item.id)}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
-            <Text style={styles.buttonText}>เสร็จแล้ว</Text>
-          </TouchableOpacity>
-        )}
+
+        <View style={styles.cardContent}>
+          <Text style={[styles.cardTitle, isDone && styles.doneText]}>
+            {item.title}
+          </Text>
+          
+          <Text style={[styles.cardTime, isDone && styles.doneText]}>
+            {hours}:{minutes}
+          </Text>
+
+          {item.note && (
+            <Text style={[styles.cardNote, isDone && styles.doneNoteText]}>
+              {item.note}
+            </Text>
+          )}
+
+          {item.box != null && (
+            <Text style={styles.cardBox}>กล่องยา: {item.box}</Text>
+          )}
+
+          {timeInfo && !isDone && (
+            <View style={[styles.timeTag, timeInfo.urgent && styles.urgentTimeTag]}>
+              <Text style={[styles.timeTagText, { color: timeInfo.urgent ? '#FF6B6B' : '#4ECDC4' }]}>
+                {timeInfo.text}
+              </Text>
+            </View>
+          )}
+
+          {!isDone && isTimeUp && (
+            <TouchableOpacity 
+              style={styles.doneButton}
+              onPress={() => handleDone(item.id)}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="checkmark-circle" size={18} color="#FFFFFF" />
+              <Text style={styles.doneButtonText}>เสร็จแล้ว</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     );
   };
@@ -129,8 +155,8 @@ export default function ReminderSettings() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={['#008080']}
-            tintColor="#008080"
+            colors={['#74ccb5']}
+            tintColor="#74ccb5"
           />
         }
       >
@@ -140,14 +166,15 @@ export default function ReminderSettings() {
               <Ionicons name="time" size={32} color="#FF6B6B" />
               <Text style={styles.medicationTitle}>รายการแจ้งเตือนวันนี้</Text>
             </View>
+            
             {filteredReminders.length > 0 ? (
               <FlatList
                 data={filteredReminders}
                 keyExtractor={(item) => item.id}
                 renderItem={renderItem}
                 showsVerticalScrollIndicator={false}
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
                 scrollEnabled={false}
+                contentContainerStyle={styles.cardList}
               />
             ) : (
               <View style={styles.emptyState}>
@@ -161,9 +188,8 @@ export default function ReminderSettings() {
             style={styles.allRemindersCard}
             onPress={() => router.push('/scheduler/all-reminders')}
             activeOpacity={0.8}
-            
           >
-            <View style={styles.cardContent}>
+            <View style={styles.cardContentRow}>
               <Ionicons name="list-outline" size={28} color="#4ECDC4" />
               <Text style={styles.allRemindersTitle}>
                 รายการแจ้งเตือนทั้งหมด
@@ -195,11 +221,11 @@ export default function ReminderSettings() {
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.footerButton}
-          onPress={() => router.push('/scheduler/all-reminders')}
+          onPress={() => router.push('/scheduler/sos')}
           activeOpacity={0.7}
         >
-          <Ionicons name="list" size={24} color="#FFFFFF" />
-          <Text style={styles.footerText}>รายการแจ้งเตือน</Text>
+          <Ionicons name="call" size={24} color="#FFFFFF" />
+          <Text style={styles.footerText}>โทรฉุกเฉิน</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -219,7 +245,7 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 9,
     paddingVertical: 20,
-    backgroundColor: '#008080',
+    backgroundColor: '#74ccb5',
     alignItems: 'center',
     zIndex: 10,
   },
@@ -242,7 +268,7 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
   medicationCard: {
-    backgroundColor: '#FFE5E5',
+    backgroundColor: '#FFFFFF',
     padding: 20,
     borderRadius: 20,
     marginBottom: 20,
@@ -260,52 +286,68 @@ const styles = StyleSheet.create({
   medicationTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#FF6B6B',
+    color: '#2D3748',
     marginLeft: 12,
     flex: 1,
   },
-  reminderItem: {
+  cardList: {
+    gap: 16,
+  },
+  cardItem: {
     backgroundColor: '#FFFFFF',
-    padding: 16,
     borderRadius: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  doneItem: {
-    backgroundColor: '#E8F5E8',
-  },
-  itemHeader: {
+    padding: 16,
     flexDirection: 'row',
     alignItems: 'flex-start',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
     marginBottom: 12,
   },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 107, 107, 0.1)',
+  cardItemDone: {
+    backgroundColor: '#F0F4F8',
+    opacity: 0.7,
+  },
+  categoryIconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 16,
   },
-  contentContainer: {
+  categoryImage: {
+    width: 50,
+    height: 50,
+  },
+  cardContent: {
     flex: 1,
   },
-  reminderText: {
+  cardTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#2D3748',
-    lineHeight: 24,
+    marginBottom: 4,
   },
-  noteText: {
-    fontSize: 14,
+  cardTime: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#4A5568',
+    marginBottom: 8,
+  },
+  cardNote: {
+    fontSize: 13,
     color: '#718096',
-    marginTop: 4,
-    lineHeight: 20,
+    marginBottom: 6,
+  },
+  cardBox: {
+    fontSize: 12,
+    color: '#A0AEC0',
+    marginBottom: 8,
   },
   doneText: {
     textDecorationLine: 'line-through',
@@ -314,44 +356,35 @@ const styles = StyleSheet.create({
   doneNoteText: {
     color: '#CBD5E0',
   },
-  timeContainer: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 12,
+  timeTag: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
     backgroundColor: '#E8F4FD',
-    borderWidth: 1,
-    borderColor: '#45B7D1',
     alignSelf: 'flex-start',
-    marginTop: 8,
+    marginBottom: 10,
   },
-  urgentTimeContainer: {
+  urgentTimeTag: {
     backgroundColor: '#FFE5E5',
-    borderColor: '#FF6B6B',
   },
-  timeText: {
-    fontSize: 12,
+  timeTagText: {
+    fontSize: 11,
     fontWeight: '600',
   },
-  completeButton: {
+  doneButton: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#4CAF50',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 12,
-    alignSelf: 'flex-end',
-    marginTop: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+    alignSelf: 'flex-start',
   },
-  buttonText: {
+  doneButtonText: {
     color: '#FFFFFF',
     fontWeight: '600',
-    marginLeft: 6,
+    marginLeft: 4,
     fontSize: 12,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    marginVertical: 8,
   },
   emptyState: {
     alignItems: 'center',
@@ -373,7 +406,7 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
     elevation: 10,
   },
-  cardContent: {
+  cardContentRow: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
@@ -393,7 +426,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    backgroundColor: '#008080',
+    backgroundColor: '#74ccb5',
     paddingVertical: 20,
     paddingBottom: Platform.OS === 'ios' ? 35 : 20,
   },

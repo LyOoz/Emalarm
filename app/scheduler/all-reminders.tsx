@@ -61,8 +61,8 @@ export default function AllReminders() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={['#008080']}
-            tintColor="#008080"
+            colors={['#74ccb5']}
+            tintColor="#74ccb5"
           />
         }
       >
@@ -157,10 +157,10 @@ export default function AllReminders() {
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.footerButton}
-          onPress={() => router.push('/scheduler/all-reminders')}
+          onPress={() => router.push('/scheduler/sos')}
           activeOpacity={0.7}
         >
-          <Ionicons name="list" size={24} color="#FFFFFF" />
+          <Ionicons name="call" size={24} color="#FFFFFF" />
           <Text style={styles.footerText}>รายการแจ้งเตือน</Text>
         </TouchableOpacity>
       </View>
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 9,
     paddingVertical: 20,
-    backgroundColor: '#008080',
+    backgroundColor: '#74ccb5',
     alignItems: 'center',
     zIndex: 10,
   },
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   },
   categoryContainer: {
     alignSelf: 'flex-start',
-    backgroundColor: '#008080',
+    backgroundColor: '#74ccb5',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    backgroundColor: '#008080',
+    backgroundColor: '#74ccb5',
     paddingVertical: 20,
     paddingBottom: Platform.OS === 'ios' ? 35 : 20,
   },

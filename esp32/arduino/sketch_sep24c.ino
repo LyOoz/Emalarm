@@ -7,10 +7,10 @@ const char* password = "";
 
 WebServer server(80);
 
-// กำหนดพิน - กล่องยา 5 ช่อง (0ไม่นับในกล่อง)
-const int IR_PINS[6] = {-1, 4, 21, 18, 19, 5};      // IR Sensors 
+// กำหนดพิน - กล่องยา 3 ช่อง (0ไม่นับในกล่อง) 
+const int IR_PINS[4] = {-1, 4, 18, 21};      // IR Sensors 
 const int BUZZER_PIN = 23;                           // Buzzer HIGH=ปิด LOW=เปิด
-const int LED_PINS[6] = {-1, 2, 15, 13, 12, 14};    // LED 
+const int LED_PINS[4] = {-1, 2, 19, 22 };    // LED 
 
 // ตัวแปรสำหรับจัดการสถานะ
 struct MedicineBox {
@@ -26,9 +26,9 @@ struct MedicineBox {
   String reminderId;
 };
 
-MedicineBox boxes[6];
-const unsigned long BUZZER_TIMEOUT = 60000; 
-const unsigned long LED_BLINK_INTERVAL = 500; 
+MedicineBox boxes[4];
+const unsigned long BUZZER_TIMEOUT = 60000; // 1 นาที
+const unsigned long LED_BLINK_INTERVAL = 500; // กระพริบทุก 500ms
 int activeBuzzerBox = -1; 
 
 void setup() {
@@ -38,7 +38,7 @@ void setup() {
   pinMode(BUZZER_PIN, OUTPUT);
   digitalWrite(BUZZER_PIN, HIGH);
   
-  for (int i = 1; i < 6; i++) {
+  for (int i = 1; i < 4; i++) {
     pinMode(IR_PINS[i], INPUT);
     pinMode(LED_PINS[i], OUTPUT);
     digitalWrite(LED_PINS[i], LOW); 
@@ -73,7 +73,7 @@ void loop() {
   server.handleClient();
   
   // ตรวจสอบสถานะของทุกกล่อง
-  for (int i = 1; i < 6; i++) {
+  for (int i = 1; i < 4; i++) {
     checkMedicineBox(i);
     updateLED(i); // อัปเดต LED กระพริบ
   }
@@ -101,8 +101,6 @@ void setupRoutes() {
   server.on("/trigger/1", HTTP_POST, []() { handleTrigger(1); });
   server.on("/trigger/2", HTTP_POST, []() { handleTrigger(2); });
   server.on("/trigger/3", HTTP_POST, []() { handleTrigger(3); });
-  server.on("/trigger/4", HTTP_POST, []() { handleTrigger(4); });
-  server.on("/trigger/5", HTTP_POST, []() { handleTrigger(5); }); 
   
   // Route สำหรับหยุด buzzer และ LED (จากแอพ)
   server.on("/stop", HTTP_POST, handleStop);
@@ -118,7 +116,7 @@ void setupRoutes() {
 }
 
 void handleTrigger(int boxId) {
-  if (boxId < 1 || boxId > 5) { 
+  if (boxId < 1 || boxId > 3) { 
     server.send(400, "application/json", "{\"error\":\"Invalid box ID\"}");
     return;
   }
@@ -161,7 +159,7 @@ void handleStatus() {
   DynamicJsonDocument doc(2048);
   JsonArray boxArray = doc.createNestedArray("boxes");
   
-  for (int i = 1; i < 6; i++) {
+  for (int i = 1; i < 4; i++) {
     JsonObject box = boxArray.createNestedObject();
     box["id"] = i;
     box["buzzerActive"] = boxes[i].buzzerActive;
@@ -199,7 +197,7 @@ void handleTest() {
   
   // ทดสอบ LED ทุกตัว
   Serial.println("ทดสอบ LED");
-  for (int i = 1; i < 6; i++) {
+  for (int i = 1; i < 4; i++) {
     digitalWrite(LED_PINS[i], HIGH);
     Serial.println("เปิด LED กล่อง " + String(i));
     delay(300);
@@ -211,7 +209,7 @@ void handleTest() {
   DynamicJsonDocument doc(1024);
   JsonArray sensors = doc.createNestedArray("sensors");
   
-  for (int i = 1; i < 6; i++) {
+  for (int i = 1; i < 4; i++) {
     JsonObject sensor = sensors.createNestedObject();
     sensor["box"] = i;
     sensor["irPin"] = IR_PINS[i];
@@ -267,7 +265,7 @@ void stopAlert(int boxId) {
 void stopAllAlerts() {
   digitalWrite(BUZZER_PIN, HIGH);
   
-  for (int i = 1; i < 6; i++) {
+  for (int i = 1; i < 4; i++) {
     if (boxes[i].buzzerActive || boxes[i].ledActive) {
       boxes[i].buzzerActive = false;
       boxes[i].ledActive = false;
@@ -336,7 +334,7 @@ void systemTest() {
   
   // debug LED 
   Serial.println("ทดสอบ LED");
-  for (int i = 1; i < 6; i++) {
+  for (int i = 1; i < 4; i++) {
     Serial.println("ทดสอบ LED กล่อง " + String(i) + " (Pin " + String(LED_PINS[i]) + ")");
     digitalWrite(LED_PINS[i], HIGH);
     delay(300);
@@ -346,7 +344,7 @@ void systemTest() {
   
   // สถานะ IR sensors
   Serial.println("สถานะ IR Sensors:");
-  for (int i = 1; i < 6; i++) {
+  for (int i = 1; i < 4; i++) {
     bool state = digitalRead(IR_PINS[i]) == LOW;
     Serial.println("กล่อง " + String(i) + " (IR Pin " + String(IR_PINS[i]) + 
                    ", LED Pin " + String(LED_PINS[i]) + "): " + 

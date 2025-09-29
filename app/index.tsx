@@ -1,24 +1,29 @@
-
-import React, { useEffect } from 'react';
-import { 
-  View, 
-  Image, 
-  StyleSheet, 
-  ActivityIndicator 
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Image,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 
 export default function IndexScreen() {
   const router = useRouter();
-
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push('/scheduler/setting');
-    }, 3000); 
+      setLoading(false); 
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
+
+  const handleStartApp = () => {
+    router.push('/scheduler/setting');
+  };
 
   return (
     <View style={styles.container}>
@@ -28,11 +33,16 @@ export default function IndexScreen() {
         </View>
       </View>
 
-      <ActivityIndicator size="large" color="#008080" />
+      {loading ? (
+        <ActivityIndicator size="large" color="#74ccb5" />
+      ) : (
+        <TouchableOpacity style={styles.button} onPress={handleStartApp}>
+          <Text style={styles.buttonText}>เริ่มต้นการใช้งาน</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -46,7 +56,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   iconBox: {
-    backgroundColor: 'transparent', 
+    backgroundColor: 'transparent',
     borderRadius: 20,
     padding: 20,
     marginBottom: 10,
@@ -56,14 +66,15 @@ const styles = StyleSheet.create({
     height: 200,
     resizeMode: 'contain',
   },
-  iconText: {
-    fontSize: 20,
-    color: '#fff',
-    fontWeight: 'bold',
+  button: {
+    backgroundColor: '#74ccb5',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 18,
   },
-  footerText: {
-    fontSize: 16,
+  buttonText: {
     color: '#fff',
-    marginTop: 20,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });

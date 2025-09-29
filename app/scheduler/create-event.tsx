@@ -33,8 +33,7 @@ export default function CreateEvent() {
   const isEditMode = selectedReminder !== null;
 
   const categories = [
-    'งาน', 'ส่วนตัว', 'สุขภาพ', 'การเงิน', 'การศึกษา', 
-    'ครอบครัว', 'เพื่อน', 'ออกกำลังกาย', 'ยา', 'นัดหมาย', 'ทั่วไป'
+    'ยา', 'นัดหมอ', 'นัดหมายทั่วไป', 'การศึกษา'
   ];
 
   useEffect(() => {
@@ -92,8 +91,8 @@ export default function CreateEvent() {
         { text: 'ตกลง', onPress: () => router.back() },
       ]);
     } else {
-      if (activeReminders.length >= 5) {
-        Alert.alert('กล่องเต็มแล้ว', 'สามารถเพิ่มการแจ้งเตือนได้สูงสุด 5 ช่องเท่านั้น');
+      if (activeReminders.length >= 3) {
+        Alert.alert('กล่องเต็มแล้ว', 'สามารถเพิ่มการแจ้งเตือนได้สูงสุด 3 ช่องเท่านั้น');
         return;
       }
 
@@ -212,7 +211,7 @@ export default function CreateEvent() {
         </View>
         <Text style={styles.label}>เลือกกล่อง</Text>
         <View style={styles.categoryContainer}>
-          {[1, 2, 3, 4, 5].map((num) => (
+          {[1, 2, 3].map((num) => (
             <TouchableOpacity
               key={num}
               style={[
@@ -278,7 +277,7 @@ export default function CreateEvent() {
             style={styles.dateTimeButton}
             onPress={() => setShowDatePicker(true)}
           >
-            <Ionicons name="calendar-outline" size={20} color="#008080" />
+            <Ionicons name="calendar-outline" size={20} color="#74ccb5" />
             <Text style={styles.dateTimeText}>{formatDate(selectedDate)}</Text>
           </TouchableOpacity>
 
@@ -286,7 +285,7 @@ export default function CreateEvent() {
             style={styles.dateTimeButton}
             onPress={() => setShowTimePicker(true)}
           >
-            <Ionicons name="time-outline" size={20} color="#008080" />
+            <Ionicons name="time-outline" size={20} color="#74ccb5" />
             <Text style={styles.dateTimeText}>{formatTime(selectedDate)}</Text>
           </TouchableOpacity>
         </View>
@@ -319,7 +318,7 @@ export default function CreateEvent() {
               style={styles.dateTimeButton}
               onPress={() => setShowDatePicker(true)}
             >
-              <Ionicons name="calendar-outline" size={20} color="#008080" />
+              <Ionicons name="calendar-outline" size={20} color="#74ccb5" />
               <Text style={styles.dateTimeText}>
                 {repeatEndDate ? `สิ้นสุด ${formatDate(repeatEndDate)}` : 'เลือกวันสิ้นสุด'}
               </Text>
@@ -379,10 +378,10 @@ export default function CreateEvent() {
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.footerButton}
-          onPress={() => router.push('/scheduler/all-reminders')}
+          onPress={() => router.push('/scheduler/sos')}
           activeOpacity={0.7}
         >
-          <Ionicons name="list" size={24} color="#FFFFFF" />
+          <Ionicons name="call" size={24} color="#FFFFFF" />
           <Text style={styles.footerText}>รายการแจ้งเตือน</Text>
         </TouchableOpacity>
       </View>
@@ -460,7 +459,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#008080',
+    backgroundColor: '#74ccb5',
     paddingHorizontal: 16,
     paddingVertical: 12,
     paddingTop: Platform.OS === 'ios' ? 20 : 20,
@@ -523,8 +522,8 @@ const styles = StyleSheet.create({
     borderColor: '#E0E0E0',
   },
   selectedCategoryButton: {
-    backgroundColor: '#008080',
-    borderColor: '#008080',
+    backgroundColor: '#74ccb5',
+    borderColor: '#74ccb5',
   },
   categoryText: {
     fontSize: 14,
@@ -574,7 +573,7 @@ const styles = StyleSheet.create({
 
   previewCategory: {    
     alignSelf: 'flex-start',
-    backgroundColor: '#008080',
+    backgroundColor: '#74ccb5',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
@@ -630,7 +629,7 @@ const styles = StyleSheet.create({
   },
   modalButton: {
     fontSize: 16,
-    color: '#008080',
+    color: '#74ccb5',
     fontWeight: '500',
   },
   pickerWrapper: {
@@ -642,7 +641,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    backgroundColor: '#008080',
+    backgroundColor: '#74ccb5',
     paddingVertical: 20,
     paddingBottom: Platform.OS === 'ios' ? 35 : 20,
   },
