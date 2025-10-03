@@ -11,6 +11,7 @@ import {
   Animated,
   PanResponder,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -195,121 +196,126 @@ export default function SOSScreen() {
         <View style={{ width: 40 }} />
       </View>
 
-      <View style={styles.emergencySection}>
-        <View style={styles.emergencyCard}>
-          <Ionicons name="medical" size={48} color="#ff0000ff" />
-          <Text style={styles.emergencyTitle}>โทรฉุกเฉิน 1669</Text>
-          <Text style={styles.emergencySubtitle}>บริการการแพทย์ฉุกเฉิน</Text>
-          <TouchableOpacity
-            style={styles.emergencyCallButton}
-            onPress={() => makeCall('1669', 'โทรฉุกเฉิน')}
-          >
-            <Ionicons name="call" size={24} color="#FFFFFF" />
-            <Text style={styles.emergencyCallText}>โทร 1669</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.contactsSection}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>รายชื่อติดต่อฉุกเฉิน</Text>
-          <TouchableOpacity
-            onPress={() => setIsAddingContact(!isAddingContact)}
-            style={styles.addButton}
-          >
-            <Ionicons
-              name={isAddingContact ? 'close' : 'add-circle'}
-              size={28}
-              color="#4ECDC4"
-            />
-          </TouchableOpacity>
-        </View>
-
-        {isAddingContact && (
-          <View style={styles.addContactForm}>
-            <TextInput
-              style={styles.input}
-              placeholder="ชื่อ"
-              value={newName}
-              onChangeText={setNewName}
-              placeholderTextColor="#A0AEC0"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="เบอร์โทรศัพท์"
-              value={newPhone}
-              onChangeText={setNewPhone}
-              keyboardType="phone-pad"
-              placeholderTextColor="#A0AEC0"
-            />
-            <TouchableOpacity style={styles.saveButton} onPress={addContact}>
-              <Text style={styles.saveButtonText}>บันทึก</Text>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.emergencySection}>
+          <View style={styles.emergencyCard}>
+            <Ionicons name="medical" size={48} color="#ff0000ff" />
+            <Text style={styles.emergencyTitle}>โทรฉุกเฉิน 1669</Text>
+            <Text style={styles.emergencySubtitle}>บริการการแพทย์ฉุกเฉิน</Text>
+            <TouchableOpacity
+              style={styles.emergencyCallButton}
+              onPress={() => makeCall('1669', 'โทรฉุกเฉิน')}
+            >
+              <Ionicons name="call" size={24} color="#FFFFFF" />
+              <Text style={styles.emergencyCallText}>โทร 1669</Text>
             </TouchableOpacity>
           </View>
-        )}
+        </View>
 
-        {contacts.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Ionicons name="person-add-outline" size={48} color="#CBD5E0" />
-            <Text style={styles.emptyText}>ยังไม่มีรายชื่อติดต่อฉุกเฉิน</Text>
-            <Text style={styles.emptySubtext}>กดปุ่ม + เพื่อเพิ่มผู้ติดต่อ</Text>
+        <View style={styles.contactsSection}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>รายชื่อติดต่อฉุกเฉิน</Text>
+            <TouchableOpacity
+              onPress={() => setIsAddingContact(!isAddingContact)}
+              style={styles.addButton}
+            >
+              <Ionicons
+                name={isAddingContact ? 'close' : 'add-circle'}
+                size={28}
+                color="#4ECDC4"
+              />
+            </TouchableOpacity>
           </View>
-        ) : (
-          <View style={styles.contactsList}>
-            {contacts.map((contact) => (
-              <View key={contact.id} style={styles.contactCard}>
-                <View style={styles.contactInfo}>
-                  <View style={styles.contactAvatar}>
-                    <Ionicons name="person" size={24} color="#4ECDC4" />
-                  </View>
-                  <View style={styles.contactDetails}>
-                    <Text style={styles.contactName}>{contact.name}</Text>
-                    <Text style={styles.contactPhone}>{contact.phone}</Text>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => deleteContact(contact.id)}
-                    style={styles.deleteButton}
-                  >
-                    <Ionicons name="trash-outline" size={20} color="#74ccb5" />
-                  </TouchableOpacity>
-                </View>
-                <SlideToCall contact={contact} />
-              </View>
-            ))}
-          </View>
-        )}
-        
-      </View>
-            <View style={styles.footer}>
-              <TouchableOpacity 
-                style={styles.footerButton}
-                onPress={() => router.push('/scheduler/setting')}
-                activeOpacity={0.7}
-              >
-                <Ionicons name="home" size={24} color="#FFFFFF" />
-                <Text style={styles.footerText}>หน้าหลัก</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.footerButton, styles.addButton]}
-                onPress={() => router.push('/scheduler/create-event')}
-                activeOpacity={0.7}
-              >
-                <View style={styles.footerButton}>
-                  <Ionicons name="add-circle-outline" size={28} color="#FFFFFF" />
-                  <Text style={styles.footerText}>เพิ่มการแจ้งเตือน</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={styles.footerButton}
-                onPress={() => router.push('/scheduler/sos')}
-                activeOpacity={0.7}
-              >
-                <Ionicons name="call" size={24} color="#FFFFFF" />
-                <Text style={styles.footerText}>โทรฉุกเฉิน</Text>
+
+          {isAddingContact && (
+            <View style={styles.addContactForm}>
+              <TextInput
+                style={styles.input}
+                placeholder="ชื่อ"
+                value={newName}
+                onChangeText={setNewName}
+                placeholderTextColor="#A0AEC0"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="เบอร์โทรศัพท์"
+                value={newPhone}
+                onChangeText={setNewPhone}
+                keyboardType="phone-pad"
+                placeholderTextColor="#A0AEC0"
+              />
+              <TouchableOpacity style={styles.saveButton} onPress={addContact}>
+                <Text style={styles.saveButtonText}>บันทึก</Text>
               </TouchableOpacity>
             </View>
+          )}
+
+          {contacts.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Ionicons name="person-add-outline" size={48} color="#CBD5E0" />
+              <Text style={styles.emptyText}>ยังไม่มีรายชื่อติดต่อฉุกเฉิน</Text>
+              <Text style={styles.emptySubtext}>กดปุ่ม + เพื่อเพิ่มผู้ติดต่อ</Text>
+            </View>
+          ) : (
+            <View style={styles.contactsList}>
+              {contacts.map((contact) => (
+                <View key={contact.id} style={styles.contactCard}>
+                  <View style={styles.contactInfo}>
+                    <View style={styles.contactAvatar}>
+                      <Ionicons name="person" size={24} color="#4ECDC4" />
+                    </View>
+                    <View style={styles.contactDetails}>
+                      <Text style={styles.contactName}>{contact.name}</Text>
+                      <Text style={styles.contactPhone}>{contact.phone}</Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => deleteContact(contact.id)}
+                      style={styles.deleteButton}
+                    >
+                      <Ionicons name="trash-outline" size={20} color="#74ccb5" />
+                    </TouchableOpacity>
+                  </View>
+                  <SlideToCall contact={contact} />
+                </View>
+              ))}
+            </View>
+          )}
+        </View>
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <TouchableOpacity 
+          style={styles.footerButton}
+          onPress={() => router.push('/scheduler/setting')}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="home" size={24} color="#FFFFFF" />
+          <Text style={styles.footerText}>หน้าหลัก</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.footerButton, styles.addButton]}
+          onPress={() => router.push('/scheduler/create-event')}
+          activeOpacity={0.7}
+        >
+          <View style={styles.footerButton}>
+            <Ionicons name="add-circle-outline" size={28} color="#FFFFFF" />
+            <Text style={styles.footerText}>เพิ่มการแจ้งเตือน</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.footerButton}
+          onPress={() => router.push('/scheduler/sos')}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="call" size={24} color="#FFFFFF" />
+          <Text style={styles.footerText}>โทรฉุกเฉิน</Text>
+        </TouchableOpacity>
+      </View>
     </View>
-    
   );
 }
 
@@ -331,12 +337,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 5,
-    
   },
   backButton: {
     width: 40,
     height: 40,
-    
   },
   headerTitle: {
     fontSize: 22,
@@ -344,6 +348,12 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     textAlign: 'center',
     marginTop: -30,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: Platform.OS === 'ios' ? 115 : 100,
   },
   emergencySection: {
     padding: 40,
@@ -393,8 +403,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   contactsSection: {
-    flex: 1,
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -535,7 +545,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
   },
-    footer: {
+  footer: {
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -558,5 +568,4 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontWeight: '500',
   },
-
 });

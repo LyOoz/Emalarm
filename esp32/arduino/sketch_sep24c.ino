@@ -7,10 +7,10 @@ const char* password = "";
 
 WebServer server(80);
 
-// กำหนดพิน - กล่องยา 3 ช่อง (0ไม่นับในกล่อง) 
-const int IR_PINS[4] = {-1, 4, 18, 21};      // IR Sensors 
+// กำหนดพิน - กล่องยา 3 ช่อง (0ไม่นับในกล่อง)    {-1, 4, 21, 18};  {-1, 19, 22, 2 };
+const int IR_PINS[4] = {-1, 4, 21, 18};      // IR Sensors 
 const int BUZZER_PIN = 23;                           // Buzzer HIGH=ปิด LOW=เปิด
-const int LED_PINS[4] = {-1, 2, 19, 22 };    // LED 
+const int LED_PINS[4] = {-1, 19, 22, 2 };   // LED 
 
 // ตัวแปรสำหรับจัดการสถานะ
 struct MedicineBox {
