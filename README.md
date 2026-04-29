@@ -1,4 +1,5 @@
 # Emalarm — Smart Emergency Reminder & SOS System
+# THIS PROJECT IS PROTOTYPE IN CLASS DESIGN THINKING MC-KMUTNB 68
 A cross-platform mobile application integrated with ESP32 hardware to provide real-time emergency alerts, reminders, and SOS functionality.
 
 Designed for personal safety, health reminders, and quick emergency response.
