@@ -37,6 +37,8 @@ Hardware (ESP32)
 # Emalarm Hardware Design
 ![esp](https://res.cloudinary.com/dpij1hdso/image/upload/v1781130519/FC291FCB-56FC-4D3A-858E-DF869DC09F7B_qx9tee.png)
 
+# Emalarm Software Design
+![sf](https://res.cloudinary.com/dpij1hdso/image/upload/v1784187974/IMG_4823_wbnfhb.png)
 # Installation
 1. Clone repository
 ``` bash
