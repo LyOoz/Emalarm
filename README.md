@@ -32,7 +32,7 @@ Hardware (ESP32)
 - TCRT5000 Ir-Sensor x3
 - LEDs x3
 - Active Buzzer x1
-- C (Arduino sketch)
+- C++ (Arduino sketch)
 
 # Emalarm Hardware Design
 ![esp](https://res.cloudinary.com/dpij1hdso/image/upload/v1781130519/FC291FCB-56FC-4D3A-858E-DF869DC09F7B_qx9tee.png)
